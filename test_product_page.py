@@ -5,8 +5,9 @@ import pytest
 import time
 
 
-@pytest.mark.good_to_basket
+@pytest.mark.guest_add_good_to_basket
 class TestAddToBasketFromProductPage:
+    @pytest.mark.need_review
     @pytest.mark.parametrize('link',
                              ["http://selenium1py.pythonanywhere.com/catalogue/coders-at-work_207/?promo=offer0",
                               "http://selenium1py.pythonanywhere.com/catalogue/coders-at-work_207/?promo=offer1",
@@ -25,6 +26,7 @@ class TestAddToBasketFromProductPage:
         page.add_to_shopping_cart()
         page.should_be_after_adding_to_cart()
 
+    @pytest.mark.need_review
     def test_guest_cant_see_product_in_basket_opened_from_product_page(self, browser):
         link = "http://selenium1py.pythonanywhere.com/catalogue/coders-at-work_207/?promo=newYear2019"
         page = ProductPage(browser, link)
@@ -64,6 +66,7 @@ class TestAddToBasketFromProductPage:
 
 @pytest.mark.login_guest
 class TestLoginFromProductPage:
+    @pytest.mark.need_review
     def test_guest_can_go_to_login_page_from_product_page(self, browser):
         link = "http://selenium1py.pythonanywhere.com/en-gb/catalogue/the-city-and-the-stars_95/"
         page = ProductPage(browser, link)
@@ -83,7 +86,6 @@ class TestLoginFromProductPage:
 class TestUserAddToBasketFromProductPage:
     @pytest.fixture(scope="function", autouse=True)
     def setup(self, browser):
-        self.browser = browser
         link = "http://selenium1py.pythonanywhere.com/catalogue/coders-at-work_207/?promo=newYear2019"
         page = ProductPage(browser, link)
         page.open()
@@ -92,16 +94,18 @@ class TestUserAddToBasketFromProductPage:
         email = str(time.time()) + "@fakemail.org"
         login_page.register_new_user(email, 'pwd123pwd456')
         login_page.should_be_authorized_user()
+        yield browser
 
-    def test_user_can_add_product_to_basket(self):
+    @pytest.mark.need_review
+    def test_user_can_add_product_to_basket(self, browser):
         link = "http://selenium1py.pythonanywhere.com/catalogue/coders-at-work_207/?promo=newYear2019"
-        page = ProductPage(self.browser, link)
+        page = ProductPage(browser, link)
         page.open()
         page.add_to_shopping_cart()
         page.should_be_after_adding_to_cart()
 
-    def test_user_cant_see_success_message(self):
+    def test_user_cant_see_success_message(self, browser):
         link = "http://selenium1py.pythonanywhere.com/catalogue/coders-at-work_207/?promo=newYear2019"
-        page = ProductPage(self.browser, link)
+        page = ProductPage(browser, link)
         page.open()
         page.should_not_be_success_message()
