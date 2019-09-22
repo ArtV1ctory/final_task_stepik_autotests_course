@@ -16,8 +16,8 @@ git clone https://github.com/ArtV1ctory/final_task_stepik_autotests_course.git
 cd final_task_stepik_autotests_course-master
 pip install -r requirements.txt
 ```
-## Running the tests
-To run the basic tests for a review:
+## Running tests
+To run basic tests for a review:
 ```
 pytest -v --tb=line --language=en -m need_review
 ```
