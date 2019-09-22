@@ -1,5 +1,5 @@
 # Selenium with python
-This is the final project to the course: [Автоматизация тестирования с помощью Selenium и Python](https://stepik.org/course/575)
+This is the final project to the course: https://stepik.org/course/575
 
 The project implemented autotests based on a Page Object pattern for the [Training site](http://selenium1py.pythonanywhere.com/) 
 
