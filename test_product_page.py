@@ -2,6 +2,7 @@ from .pages.product_page import ProductPage
 from .pages.login_page import LoginPage
 from .pages.basket_page import BasketPage
 import pytest
+import time
 
 
 @pytest.mark.good_to_basket
@@ -23,6 +24,20 @@ class TestAddToBasketFromProductPage:
         page.open()
         page.add_to_shopping_cart()
         page.should_be_after_adding_to_cart()
+
+    def test_guest_cant_see_product_in_basket_opened_from_product_page(self, browser):
+        link = "http://selenium1py.pythonanywhere.com/catalogue/coders-at-work_207/?promo=newYear2019"
+        page = ProductPage(browser, link)
+        page.open()
+        page.go_to_basket()
+        basket_page = BasketPage(browser, browser.current_url)
+        basket_page.should_be_empty_basket()
+
+    def test_guest_cant_see_success_message(self, browser):
+        link = "http://selenium1py.pythonanywhere.com/catalogue/coders-at-work_207/?promo=newYear2019"
+        page = ProductPage(browser, link)
+        page.open()
+        page.should_not_be_success_message()
 
     @pytest.mark.xfail
     def test_guest_cant_see_success_message_after_adding_product_to_basket(self, browser):
@@ -64,18 +79,29 @@ class TestLoginFromProductPage:
         page.should_be_login_link()
 
 
-@pytest.mark.empty_basket
-class TestThatBasketIsEmpty:
-    def test_guest_cant_see_product_in_basket_opened_from_product_page(self, browser):
+@pytest.mark.registered_guest_add_good
+class TestUserAddToBasketFromProductPage:
+    @pytest.fixture(scope="function", autouse=True)
+    def setup(self, browser):
+        self.browser = browser
         link = "http://selenium1py.pythonanywhere.com/catalogue/coders-at-work_207/?promo=newYear2019"
         page = ProductPage(browser, link)
         page.open()
-        page.go_to_basket()
-        basket_page = BasketPage(browser, browser.current_url)
-        basket_page.should_be_empty_basket()
+        page.go_to_login_page()
+        login_page = LoginPage(browser, browser.current_url)
+        email = str(time.time()) + "@fakemail.org"
+        login_page.register_new_user(email, 'pwd123pwd456')
+        login_page.should_be_authorized_user()
 
-    def test_guest_cant_see_success_message(self, browser):
+    def test_user_can_add_product_to_basket(self):
         link = "http://selenium1py.pythonanywhere.com/catalogue/coders-at-work_207/?promo=newYear2019"
-        page = ProductPage(browser, link)
+        page = ProductPage(self.browser, link)
+        page.open()
+        page.add_to_shopping_cart()
+        page.should_be_after_adding_to_cart()
+
+    def test_user_cant_see_success_message(self):
+        link = "http://selenium1py.pythonanywhere.com/catalogue/coders-at-work_207/?promo=newYear2019"
+        page = ProductPage(self.browser, link)
         page.open()
         page.should_not_be_success_message()
