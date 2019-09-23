@@ -13,7 +13,7 @@ selenium==3.14.0
 These instructions will get you a copy of the project up and running on your local machine for testing purposes.
 ```
 git clone https://github.com/ArtV1ctory/final_task_stepik_autotests_course.git
-cd final_task_stepik_autotests_course-master
+cd final_task_stepik_autotests_course
 pip install -r requirements.txt
 ```
 ## Running tests
